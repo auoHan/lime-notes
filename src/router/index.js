@@ -9,10 +9,6 @@ import TashDetail from '@/views/TashDetail'
 
 const routes = [
   {
-    path: '/',
-    redirect: '/login'
-  },
-  {
     path: '/login',
     name: 'Login',
     component: Login
