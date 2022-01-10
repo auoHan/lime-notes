@@ -6,27 +6,32 @@
           <div class="main"></div>
           <div class="form">
             <h3 @click="showRegister">创建账户</h3>
-            <div v-show="isShowRegister" class="register">
-              <input type="text" v-model="register.username" placeholder="用户名">
-              <input :type="isShowRegisterPassword ? 'text' : 'password'" v-model="register.password" placeholder="密码">
-              <svg class="icon" @click="isShowRegisterPassword = !isShowRegisterPassword">
-                <use xlink:href="#icon-yincang" v-show="isShowRegisterPassword===false"></use>
-                <use xlink:href="#icon-xianshi" v-show="isShowRegisterPassword===true"></use>
-              </svg>
-              <p :class="{error: register.isError}"> {{ register.notice }}</p>
-              <div class="button" @click="onRegister">创建账号</div>
-            </div>
+            <transition name="slide">
+              <div :class="{show: isShowRegister}" class="register">
+                <input type="text" v-model="register.username" placeholder="用户名">
+                <input :type="isShowRegisterPassword ? 'text' : 'password'" v-model="register.password"
+                       placeholder="密码">
+                <svg @click="isShowRegisterPassword = !isShowRegisterPassword">
+                  <use xlink:href="#icon-yincang" v-show="isShowRegisterPassword===false"></use>
+                  <use xlink:href="#icon-xianshi" v-show="isShowRegisterPassword===true"></use>
+                </svg>
+                <p :class="{error: register.isError}"> {{ register.notice }}</p>
+                <div class="button" @click="onRegister">创建账号</div>
+              </div>
+            </transition>
             <h3 @click="showLogin">登录</h3>
-            <div v-show="isShowLogin" class="login">
-              <input type="text" v-model="login.username" placeholder="输入用户名">
-              <input :type="isShowLoginPassword ? 'text' : 'password'" v-model="login.password" placeholder="密码">
-              <svg class="icon" @click="isShowLoginPassword = !isShowLoginPassword">
-                <use xlink:href="#icon-yincang" v-show="isShowLoginPassword===false"></use>
-                <use xlink:href="#icon-xianshi" v-show="isShowLoginPassword===true"></use>
-              </svg>
-              <p :class="{error: login.isError}"> {{ login.notice }}</p>
-              <div class="button" @click="onLogin"> 登录</div>
-            </div>
+            <transition name="slide">
+              <div :class="{show: isShowLogin}" class="login">
+                <input type="text" v-model="login.username" placeholder="输入用户名">
+                <input :type="isShowLoginPassword ? 'text' : 'password'" v-model="login.password" placeholder="密码">
+                <svg @click="isShowLoginPassword = !isShowLoginPassword">
+                  <use xlink:href="#icon-yincang" v-show="isShowLoginPassword===false"></use>
+                  <use xlink:href="#icon-xianshi" v-show="isShowLoginPassword===true"></use>
+                </svg>
+                <p :class="{error: login.isError}"> {{ login.notice }}</p>
+                <div class="button" @click="onLogin"> 登录</div>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
@@ -69,7 +74,7 @@ export default {
     },
     onRegister() {
       if (!/^[\w\u4e00-\u9fa5]{3,15}$/.test(this.register.username)) {
-        this.register.notice = '用户名3~15个字符，仅限于字母数字下划线中文'
+        this.register.notice = '用户名3~15个字符，仅限字母数字下划线中文'
         this.register.isError = true
         return
       }
@@ -140,12 +145,13 @@ export default {
   .form {
     width: 270px;
     border-left: 1px solid #ccc;
-
+    overflow: hidden;
 
     h3 {
       padding: 10px 20px;
       font-weight: normal;
       font-size: 16px;
+      margin-top: -1px;
       border-top: 1px solid #eee;
       cursor: pointer;
 
@@ -174,8 +180,15 @@ export default {
 
 
     .login, .register {
-      padding: 10px 20px;
+      padding: 0 20px;
       border-top: 1px solid #eee;
+      height: 0;
+      overflow: hidden;
+      transition: height .4s;
+
+      &.show {
+        height: 218px;
+      }
 
       input {
         display: block;
