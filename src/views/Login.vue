@@ -2,12 +2,12 @@
   <div>4</div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   name: 'Login.vue'
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 
 </style>

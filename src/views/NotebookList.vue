@@ -1,13 +1,30 @@
 <template>
-  <div>3</div>
+  <div id="notebook-list">
+    <h1>{{ msg }}</h1>
+    <ul>
+      <li>
+        <router-link to="/note/1">笔记本1</router-link>
+      </li>
+      <li>
+        <router-link to="/note/2">笔记本2</router-link>
+      </li>
+    </ul>
+  </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
-  name: 'NotebookList.vue'
-};
+  name: 'NotebookList.vue',
+  data() {
+    return {
+      msg: '笔记本列表'
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="less" scoped>
+h1 {
+  color: red;
+}
 </style>

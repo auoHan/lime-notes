@@ -1,13 +1,22 @@
 <template>
-  <div>1</div>
+  <div id="trash-detail">
+    <h1>{{ msg }} : {{ $route.params.noteId }}</h1>
+  </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
-  name: 'TashDetail.vue 动手'
-};
+  name: 'TashDetail',
+  data() {
+    return {
+      msg: '回收站笔记详情页'
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="less" scoped>
+h1 {
+  color: blue;
+}
 </style>
