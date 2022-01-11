@@ -27,6 +27,7 @@
 <script>
 import auth from '@/apis/auth'
 import notebooks from '@/apis/notebooks'
+import {friendlyDate} from '@/util/date-util'
 
 export default {
   name: 'NotebookList.vue',
@@ -53,6 +54,7 @@ export default {
         return
       }
       notebooks.addNotebook({title}).then(res => {
+        res.data.friendlyCreatedAt = friendlyDate(res.data.createdAt)
         this.notebooks.unshift(res.data)
         alert(res.msg)
       })
