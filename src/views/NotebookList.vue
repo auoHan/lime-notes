@@ -13,12 +13,21 @@
 </template>
 
 <script>
+import auth from '@/apis/auth'
+
 export default {
   name: 'NotebookList.vue',
   data() {
     return {
       msg: '笔记本列表'
     }
+  },
+  created() {
+    auth.getInfo().then(res => {
+      if (!res.isLogin) {
+        this.$router.push('/login')
+      }
+    })
   }
 }
 </script>
