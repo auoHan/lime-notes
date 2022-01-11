@@ -4,6 +4,7 @@
 
 <script>
 import auth from '@/apis/auth'
+import {eventBus} from '@/main'
 
 export default {
   name: 'Avatar',
@@ -13,6 +14,12 @@ export default {
     }
   },
   created() {
+    eventBus.$on('userInfo', username => {
+      this.username = username
+    })
+    eventBus.$on('noLogin', username => {
+      this.username = username
+    })
     auth.getInfo().then(res => {
       if (res.isLogin) {
         this.username = res.data.username

@@ -15,12 +15,14 @@
 <script>
 import Avatar from '@/components/Avatar'
 import auth from '@/apis/auth'
+import {eventBus} from '@/main'
 export default {
   name: 'Sidebar.vue',
   components: {Avatar},
   methods: {
     onLogout() {
       auth.logout().then(() => {
+        eventBus.$emit('noLogin', '未登录')
         this.$router.push({path: '/login'})
       })
     }

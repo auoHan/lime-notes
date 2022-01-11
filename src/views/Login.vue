@@ -42,7 +42,7 @@
 
 <script>
 import auth from '@/apis/auth'
-
+import {eventBus} from '@/main'
 export default {
   name: 'Login',
   data() {
@@ -86,13 +86,13 @@ export default {
         return
       }
 
-      console.log(`start register..., username: ${this.register.username} , password: ${this.register.password}`)
       auth.register({
         username: this.register.username,
         password: this.register.password
       }).then(() => {
         this.register.isError = false
         this.register.notice = ''
+        eventBus.$emit('userInfo', this.register.username)
         this.$router.push({path: '/notebooks'})
       }).catch(data => {
         this.register.isError = true
@@ -111,13 +111,13 @@ export default {
         return
       }
 
-      console.log(`start login..., username: ${this.login.username} , password: ${this.login.password}`)
       auth.login({
         username: this.login.username,
         password: this.login.password
       }).then(() => {
         this.login.isError = false
         this.login.notice = ''
+        eventBus.$emit('userInfo', this.login.username)
         this.$router.push({path: '/notebooks'})
       }).catch(data => {
         this.login.isError = true
