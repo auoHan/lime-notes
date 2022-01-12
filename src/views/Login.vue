@@ -41,8 +41,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import auth from '@/apis/auth'
 import {eventBus} from '@/main'
+import {Message} from 'view-design'
+
+Vue.component('Message', Message)
 export default {
   name: 'Login',
   data() {
@@ -92,6 +96,7 @@ export default {
       }).then(() => {
         this.register.isError = false
         this.register.notice = ''
+        Message.success('注册成功')
         eventBus.$emit('userInfo', this.register.username)
         this.$router.push({path: '/notebooks'})
       }).catch(data => {
@@ -117,6 +122,7 @@ export default {
       }).then(() => {
         this.login.isError = false
         this.login.notice = ''
+        Message.success('登录成功')
         eventBus.$emit('userInfo', this.login.username)
         this.$router.push({path: '/notebooks'})
       }).catch(data => {
