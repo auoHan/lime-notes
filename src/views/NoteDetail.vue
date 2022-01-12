@@ -1,14 +1,16 @@
 <template>
   <div id="note-detail">
-    <h1>{{ msg }} : {{ $route.params.noteId }}</h1>
+    <NoteSidebar/>
   </div>
 </template>
 
 <script>
 import auth from '@/apis/auth'
+import NoteSidebar from '@/components/NoteSidebar'
 
 export default {
   name: 'NoteDetail.vue',
+  components: {NoteSidebar},
   data() {
     return {
       msg: '笔记详情页'
@@ -25,7 +27,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-h1 {
-  color: blue;
+#note-detail {
+  display: flex;
+  align-items: stretch;
+  background-color: #fff;
+  flex: 1;
 }
 </style>
