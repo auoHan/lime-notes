@@ -34,7 +34,7 @@
 import Vue from 'vue'
 import auth from '@/apis/auth'
 import notebooks from '@/apis/notebooks'
-import {friendlyDate} from '@/util/date-util'
+import {friendlyDate} from '@/utils/date-util'
 import {Modal, Message, Input} from 'view-design'
 
 Vue.component('Modal', Modal)

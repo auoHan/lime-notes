@@ -1,5 +1,5 @@
-import request from '@/util/request'
-import {friendlyDate} from '@/util/date-util'
+import request from '@/utils/request'
+import {friendlyDate} from '@/utils/date-util'
 
 const URL = {
   GET: '/notebooks',
