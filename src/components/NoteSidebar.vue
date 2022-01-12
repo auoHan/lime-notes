@@ -3,7 +3,7 @@
     <span class="btn add-note" @click="addNote">添加笔记</span>
     <Dropdown trigger="click" class="notebook-title" @on-click="handleCommand" placement="bottom">
       <a href="javascript:void(0)">
-        <span>选择</span>
+        <span>{{ this.curBook.title }}</span>
         <Icon type="ios-arrow-down"></Icon>
       </a>
       <DropdownMenu slot="list">
@@ -31,6 +31,8 @@
 <script>
 import Vue from 'vue'
 import {Dropdown, DropdownMenu, DropdownItem, Icon} from 'view-design'
+import notebooks from '@/apis/notebooks'
+import notes from '@/apis/notes'
 
 Vue.component('Dropdown', Dropdown)
 Vue.component('DropdownMenu', DropdownMenu)
@@ -41,39 +43,35 @@ export default {
 
   data() {
     return {
-      notebooks: [
-        {
-          id: 1,
-          title: 'hellohellohellohellohellohellohellohellohellohellohello'
-        },
-        {
-          id: 2,
-          title: 'hi'
-        }
-      ],
-      notes: [
-        {
-          id: 12,
-          title: '第12个笔记',
-          updatedAtFriendly: '3分钟前'
-        },
-        {
-          id: 12,
-          title: '第13个笔记',
-          updatedAtFriendly: '5分钟前'
-        }
-      ],
+      notebooks: [],
+      notes: [],
       curBook: {}
     }
   },
+  created() {
+    notebooks.getAll().then(res => {
+      this.notebooks = res.data
+      this.curBook = this.notebooks.find(notebook => notebook.id.toString() === this.$route.query.notebookId)
+        || this.notebooks[0] || {}
+      return notes.getAll({notebookId: this.curBook.id})
+    }).then(res => {
+      this.notes = res.data
+    })
 
+  },
   methods: {
-    handleCommand(cmd) {
-      console.log(cmd)
+    handleCommand(notebookId) {
+      if (notebookId === 'trash') {
+        return this.$router.push({path: '/trash'})
+      }
+      this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
+      notes.getAll({notebookId}).then(res => {
+        this.notes = res.data
+      })
     },
 
     addNote() {
-
+      notes.addNote({notebookId: this.curBook.id}, {title: 'aaa', content: 'bbb'})
     }
 
   }
