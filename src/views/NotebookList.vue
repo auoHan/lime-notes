@@ -103,11 +103,13 @@ export default {
       })
     },
     onDelete(notebook) {
+      const _this = this
+      console.log(Modal)
       Modal.confirm({
         title: '确定要删除吗',
         onOk() {
           notebooks.deleteNotebook(notebook.id).then(res => {
-            this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
+            _this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
             Message.success(res.msg)
           })
         }
