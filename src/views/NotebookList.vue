@@ -1,7 +1,7 @@
 <template>
   <div class="detail" id="notebook-list">
     <header>
-      <a href="#" class="btn" @click.prevent="onCreate"><i class="iconfont icon-plus"></i> 新建笔记本</a>
+      <a href="#" class="btn" @click.prevent="showCreateModal=true"><i class="iconfont icon-plus"></i> 新建笔记本</a>
     </header>
     <main>
       <div class="layout">
@@ -19,22 +19,35 @@
           </router-link>
         </div>
       </div>
-
     </main>
-
+    <Modal
+      v-model="showCreateModal"
+      title='创建笔记本'
+      @on-ok="createNote"
+      @on-cancel="title=''">
+      <Input type="text" v-model="title"/>
+    </Modal>
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import auth from '@/apis/auth'
 import notebooks from '@/apis/notebooks'
 import {friendlyDate} from '@/util/date-util'
+import {Modal, Message, Input} from 'view-design'
 
+Vue.component('Modal', Modal)
+Vue.component('Message', Message)
+Vue.component('Input', Input)
 export default {
   name: 'NotebookList.vue',
   data() {
     return {
-      notebooks: []
+      notebooks: [],
+      title: '',
+      notebook: {},
+      showCreateModal: false
     }
   },
   created() {
@@ -48,37 +61,57 @@ export default {
     })
   },
   methods: {
-    onCreate() {
-      let title = window.prompt('创建笔记本')
-      if (title.trim() === '') {
-        alert('笔记本标题不能为空')
+    createNote() {
+      if (this.title.trim() === '') {
+        Message.error('添加失败，笔记本标题不能为空')
         return
       }
-      notebooks.addNotebook({title}).then(res => {
+      notebooks.addNotebook({title: this.title}).then(res => {
         res.data.friendlyCreatedAt = friendlyDate(res.data.createdAt)
         this.notebooks.unshift(res.data)
-        alert(res.msg)
+        Message.success(res.msg)
       })
     },
     onEdit(notebook) {
-      let title = window.prompt('修改笔记本标题', notebook.title)
-      if (title.trim() === '') {
-        alert('笔记本标题不能为空')
-        return
-      }
-      notebooks.updateNotebook(notebook.id, {title}).then(res => {
-        notebook.title = title
-        alert(res.msg)
+      let title = ''
+      Modal.confirm({
+        title: '修改笔记标题',
+        render: (h) => {
+          return h('Input', {
+            props: {
+              value: this.value,
+              autofocus: true,
+              placeholder: notebook.title
+            },
+            on: {
+              input: (val) => {
+                title = val
+              },
+            },
+          })
+        },
+        onOk() {
+          if (title.trim() === '') {
+            Message.error('修改失败,笔记本标题不能为空')
+            return
+          }
+          notebooks.updateNotebook(notebook.id, {title}).then(res => {
+            notebook.title = title
+            Message.success(res.msg)
+          })
+        }
       })
     },
     onDelete(notebook) {
-      let isConfirm = window.confirm('确定要删除吗')
-      if (isConfirm) {
-        notebooks.deleteNotebook(notebook.id).then(res => {
-          this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
-          alert(res.msg)
-        })
-      }
+      Modal.confirm({
+        title: '确定要删除吗',
+        onOk() {
+          notebooks.deleteNotebook(notebook.id).then(res => {
+            this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
+            Message.success(res.msg)
+          })
+        }
+      })
     }
   }
 }
