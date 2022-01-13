@@ -56,7 +56,6 @@ export default {
         this.$router.push('/login')
       }
     })
-    this.setCurNote({curNoteId: this.$route.query.noteId})
   },
   computed: {
     ...mapGetters('note', ['curNote', 'notes']),

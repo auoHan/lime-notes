@@ -51,12 +51,15 @@ export default {
     this.getNotebooks().then(() => {
       this.setCurBook({curBookId: this.$route.query.notebookId})
       this.getNotes({notebookId: this.curBook.id.toString()})
+    }).then(() => {
+      this.setCurNote({curNoteId: this.$route.query.noteId})
     })
   },
   methods: {
     ...mapActions('note', ['getNotes', 'addNote', 'updateNote', 'deleteNote']),
     ...mapActions('notebook', ['getNotebooks']),
     ...mapMutations('notebook', ['setCurBook']),
+    ...mapMutations('note', ['setCurNote']),
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})
