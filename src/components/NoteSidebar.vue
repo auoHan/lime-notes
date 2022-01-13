@@ -33,7 +33,7 @@ import Vue from 'vue'
 import {Dropdown, DropdownMenu, DropdownItem, Icon} from 'view-design'
 import notebooks from '@/apis/notebooks'
 import notes from '@/apis/notes'
-
+import {eventBus} from '@/main'
 Vue.component('Dropdown', Dropdown)
 Vue.component('DropdownMenu', DropdownMenu)
 Vue.component('DropdownItem', DropdownItem)
@@ -56,6 +56,8 @@ export default {
       return notes.getAll({notebookId: this.curBook.id})
     }).then(res => {
       this.notes = res.data
+      this.$emit('update:notes', this.notes)
+      eventBus.$emit('update:notes', this.notes)
     })
 
   },
@@ -67,11 +69,15 @@ export default {
       this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
       notes.getAll({notebookId}).then(res => {
         this.notes = res.data
+        this.$emit('update:notes', this.notes)
       })
     },
 
     addNote() {
-      notes.addNote({notebookId: this.curBook.id}, {title: 'aaa', content: 'bbb'})
+      notes.addNote({notebookId: this.curBook.id})
+        .then(res => {
+          this.notes.unshift(res.data)
+        })
     }
 
   }
@@ -155,6 +161,12 @@ export default {
       span {
         padding: 0 10px;
         flex: 1;
+      }
+
+      .title {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
   }
