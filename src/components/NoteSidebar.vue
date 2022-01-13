@@ -1,9 +1,9 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note" @click="addNote">添加笔记</span>
+    <span class="btn add-note" @click="onAddNote">添加笔记</span>
     <Dropdown trigger="click" class="notebook-title" @on-click="handleCommand" placement="bottom">
       <a href="javascript:void(0)">
-        <span>{{ this.curBook.title }}</span>
+        <span>{{ curBook.title }}</span>
         <Icon type="ios-arrow-down"></Icon>
       </a>
       <DropdownMenu slot="list">
@@ -31,9 +31,8 @@
 <script>
 import Vue from 'vue'
 import {Dropdown, DropdownMenu, DropdownItem, Icon} from 'view-design'
-import notebooks from '@/apis/notebooks'
-import notes from '@/apis/notes'
-import {eventBus} from '@/main'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
+
 Vue.component('Dropdown', Dropdown)
 Vue.component('DropdownMenu', DropdownMenu)
 Vue.component('DropdownItem', DropdownItem)
@@ -42,42 +41,32 @@ Vue.component('Icon', Icon)
 export default {
 
   data() {
-    return {
-      notebooks: [],
-      notes: [],
-      curBook: {}
-    }
+    return {}
+  },
+  computed: {
+    ...mapGetters('notebook', ['notebooks', 'curBook']),
+    ...mapGetters('note', ['notes', 'curNote'])
   },
   created() {
-    notebooks.getAll().then(res => {
-      this.notebooks = res.data
-      this.curBook = this.notebooks.find(notebook => notebook.id.toString() === this.$route.query.notebookId)
-        || this.notebooks[0] || {}
-      return notes.getAll({notebookId: this.curBook.id})
-    }).then(res => {
-      this.notes = res.data
-      this.$emit('update:notes', this.notes)
-      eventBus.$emit('update:notes', this.notes)
+    this.getNotebooks().then(() => {
+      this.setCurBook({curBookId: this.$route.query.notebookId})
+      this.getNotes({notebookId: this.curBook.id.toString()})
     })
-
   },
   methods: {
+    ...mapActions('note', ['getNotes', 'addNote', 'updateNote', 'deleteNote']),
+    ...mapActions('notebook', ['getNotebooks']),
+    ...mapMutations('notebook', ['setCurBook']),
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})
       }
-      this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
-      notes.getAll({notebookId}).then(res => {
-        this.notes = res.data
-        this.$emit('update:notes', this.notes)
-      })
+      this.setCurBook({curBookId: notebookId.toString()})
+      this.getNotes({notebookId: notebookId.toString()})
     },
 
-    addNote() {
-      notes.addNote({notebookId: this.curBook.id})
-        .then(res => {
-          this.notes.unshift(res.data)
-        })
+    onAddNote() {
+      this.addNote({notebookId: this.curBook.id.toString()})
     }
 
   }
