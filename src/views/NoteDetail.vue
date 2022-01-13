@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import auth from '@/apis/auth'
 import NoteSidebar from '@/components/NoteSidebar'
 import Vue from 'vue'
 import {Message, Tooltip} from 'view-design'
@@ -51,11 +50,7 @@ export default {
     }
   },
   created() {
-    auth.getInfo().then(res => {
-      if (!res.isLogin) {
-        this.$router.push('/login')
-      }
-    })
+    this.checkLogin({path: '/login'})
   },
   computed: {
     ...mapGetters('note', ['curNote', 'notes']),
@@ -65,6 +60,7 @@ export default {
   },
 
   methods: {
+    ...mapActions('user', ['checkLogin']),
     ...mapMutations('note', ['setCurNote']),
     ...mapActions('note', ['updateNote', 'deleteNote']),
     onUpdateNote: _.debounce(function () {

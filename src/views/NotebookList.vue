@@ -32,7 +32,6 @@
 
 <script>
 import Vue from 'vue'
-import auth from '@/apis/auth'
 import {Modal, Message, Input} from 'view-design'
 import {mapGetters, mapActions} from 'vuex'
 import notebooks from '@/apis/notebooks'
@@ -49,17 +48,14 @@ export default {
     }
   },
   created() {
-    auth.getInfo().then(res => {
-      if (!res.isLogin) {
-        this.$router.push('/login')
-      }
-    })
+    this.checkLogin({path: '/login'})
     this.$store.dispatch('notebook/getNotebooks')
   },
   computed: {
     ...mapGetters('notebook', ['notebooks'])
   },
   methods: {
+    ...mapActions('user', ['checkLogin']),
     ...mapActions('notebook', ['getNotebooks', 'addNotebook', 'updateNotebook', 'deleteNotebook']),
     createNote() {
       if (this.title.trim() === '') {

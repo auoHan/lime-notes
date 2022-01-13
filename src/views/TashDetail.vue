@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import auth from '@/apis/auth'
+import {mapActions} from 'vuex'
 
 export default {
   name: 'TashDetail',
@@ -15,11 +15,10 @@ export default {
     }
   },
   created() {
-    auth.getInfo().then(res => {
-      if (!res.isLogin) {
-        this.$router.push('/login')
-      }
-    })
+    this.checkLogin({path: '/login'})
+  },
+  methods: {
+    ...mapActions('user', ['checkLogin'])
   }
 }
 </script>

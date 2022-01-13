@@ -3,33 +3,21 @@
 </template>
 
 <script>
-import auth from '@/apis/auth'
-import {eventBus} from '@/main'
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'Avatar',
   data() {
-    return {
-      username: '未登录'
-    }
+    return {}
   },
   created() {
-    eventBus.$on('userInfo', username => {
-      this.username = username
-    })
-    eventBus.$on('noLogin', username => {
-      this.username = username
-    })
-    auth.getInfo().then(res => {
-      if (res.isLogin) {
-        this.username = res.data.username
-      }
-    })
+    this.checkLogin()
+  },
+  methods: {
+    ...mapActions('user', ['checkLogin'])
   },
   computed: {
-    slug() {
-      return this.username.charAt(0)
-    }
+    ...mapGetters('user', ['slug', 'username'])
   }
 }
 </script>

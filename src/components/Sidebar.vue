@@ -14,22 +14,14 @@
 
 <script>
 import Avatar from '@/components/Avatar'
-import auth from '@/apis/auth'
-import {eventBus} from '@/main'
-import {Message} from 'view-design'
-import Vue from 'vue'
-
-Vue.component('Message', Message)
+import {mapActions} from 'vuex'
 export default {
   name: 'Sidebar.vue',
   components: {Avatar},
   methods: {
+    ...mapActions('user', ['logout']),
     onLogout() {
-      auth.logout().then(() => {
-        eventBus.$emit('noLogin', '未登录')
-        Message.success('注销成功')
-        this.$router.push({path: '/login'})
-      })
+      this.logout({path: '/login'})
     }
   }
 }

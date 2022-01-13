@@ -42,9 +42,8 @@
 
 <script>
 import Vue from 'vue'
-import auth from '@/apis/auth'
-import {eventBus} from '@/main'
 import {Message} from 'view-design'
+import {mapActions} from 'vuex'
 
 Vue.component('Message', Message)
 export default {
@@ -70,6 +69,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('user', {registerUser: 'register', loginUser: 'login'}),
     showLogin() {
       this.isShowLogin = true
       this.isShowRegister = false
@@ -90,14 +90,13 @@ export default {
         return
       }
 
-      auth.register({
+      this.registerUser({
         username: this.register.username,
         password: this.register.password
       }).then(() => {
         this.register.isError = false
         this.register.notice = ''
         Message.success('注册成功')
-        eventBus.$emit('userInfo', this.register.username)
         this.$router.push({path: '/notebooks'})
       }).catch(data => {
         this.register.isError = true
@@ -116,14 +115,13 @@ export default {
         return
       }
 
-      auth.login({
+      this.loginUser({
         username: this.login.username,
         password: this.login.password
       }).then(() => {
         this.login.isError = false
         this.login.notice = ''
         Message.success('登录成功')
-        eventBus.$emit('userInfo', this.login.username)
         this.$router.push({path: '/notebooks'})
       }).catch(data => {
         this.login.isError = true
