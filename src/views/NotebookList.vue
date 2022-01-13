@@ -33,9 +33,9 @@
 <script>
 import Vue from 'vue'
 import auth from '@/apis/auth'
-import notebooks from '@/apis/notebooks'
-import {friendlyDate} from '@/utils/date-util'
 import {Modal, Message, Input} from 'view-design'
+import {mapGetters, mapActions} from 'vuex'
+import notebooks from '@/apis/notebooks'
 
 Vue.component('Modal', Modal)
 Vue.component('Message', Message)
@@ -44,9 +44,7 @@ export default {
   name: 'NotebookList.vue',
   data() {
     return {
-      notebooks: [],
       title: '',
-      notebook: {},
       showCreateModal: false
     }
   },
@@ -56,24 +54,24 @@ export default {
         this.$router.push('/login')
       }
     })
-    notebooks.getAll().then(res => {
-      this.notebooks = res.data
-    })
+    this.$store.dispatch('notebook/getNotebooks')
+  },
+  computed: {
+    ...mapGetters('notebook', ['notebooks'])
   },
   methods: {
+    ...mapActions('notebook', ['getNotebooks', 'addNotebook', 'updateNotebook', 'deleteNotebook']),
     createNote() {
       if (this.title.trim() === '') {
         Message.error('添加失败，笔记本标题不能为空')
         return
       }
-      notebooks.addNotebook({title: this.title}).then(res => {
-        res.data.friendlyCreatedAt = friendlyDate(res.data.createdAt)
-        this.notebooks.unshift(res.data)
-        Message.success(res.msg)
-      })
+      this.addNotebook({title: this.title})
+      this.title = ''
     },
     onEdit(notebook) {
       let title = ''
+      // const _this = this
       Modal.confirm({
         title: '修改笔记标题',
         render: (h) => {
@@ -95,6 +93,8 @@ export default {
             Message.error('修改失败,笔记本标题不能为空')
             return
           }
+          //_this.updateNotebook({notebookId:notebook.id,title})
+          //this的问题导致不能立即渲染，得刷新才渲染，这里还是用api去发请求
           notebooks.updateNotebook(notebook.id, {title}).then(res => {
             notebook.title = title
             Message.success(res.msg)
@@ -104,9 +104,11 @@ export default {
     },
     onDelete(notebook) {
       const _this = this
+      console.log(this.Modal)
       Modal.confirm({
         title: '确定要删除吗',
         onOk() {
+          //_this.deleteNotebook({notebookId:notebook.id})
           notebooks.deleteNotebook(notebook.id).then(res => {
             _this.notebooks.splice(_this.notebooks.indexOf(notebook), 1)
             Message.success(res.msg)
