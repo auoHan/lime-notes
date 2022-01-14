@@ -66,7 +66,10 @@ export default {
         return this.$router.push({path: '/trash'})
       }
       this.setCurBook({curBookId: notebookId.toString()})
-      this.getNotes({notebookId: notebookId.toString()})
+      this.getNotes({notebookId: notebookId.toString()}).then(() => {
+        this.setCurNote({})
+        this.$router.replace({path: '/note', query: {noteId: this.curNote.id, notebookId: this.curBook.id}})
+      })
     },
 
     onAddNote() {
