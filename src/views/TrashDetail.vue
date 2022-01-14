@@ -7,7 +7,7 @@
         <div>标题</div>
       </div>
       <ul class="notes">
-        <li v-for="note in trashNotes" :key="note.id" :class="$route.query.noteId===undefined && 'selected'">
+        <li v-for="note in trashNotes" :key="note.id">
           <router-link :to="`/trash?noteId=${note.id}`">
             <span class="date">{{ note.updatedAtFriendly }}</span>
             <span class="title">{{ note.title }}</span>
@@ -51,8 +51,8 @@ export default {
     this.getNotebooks()
     this.getTrashNotes().then(() => {
       this.setCurTrashNoteId(this.$route.query.noteId)
+      this.$router.replace({path: '/trash', query: {noteId: this.curTrashNote.id}})
     })
-    console.log(Object.keys(this.$route.query).length === 0)
   },
   computed: {
     ...mapGetters('trash', ['trashNotes', 'curTrashNote', 'belongTo']),
@@ -144,15 +144,6 @@ export default {
 
       &:nth-child(odd) {
         background-color: #f2f2f2;
-      }
-
-      &.selected {
-        &:first-child {
-          a {
-            border: 2px solid #3ae374;
-            border-radius: 3px;
-          }
-        }
       }
 
       a {
