@@ -63,6 +63,7 @@ export default {
     ...mapActions('user', ['checkLogin']),
     ...mapMutations('note', ['setCurNote']),
     ...mapActions('note', ['updateNote', 'deleteNote']),
+    ...mapMutations('trash', ['addTrashNote']),
     onUpdateNote: _.debounce(function () {
       this.updateNote({noteId: this.curNote.id.toString(), title: this.curNote.title, content: this.curNote.content})
         .then(() => {
@@ -77,7 +78,9 @@ export default {
       this.deleteNote({noteId: this.curNote.id.toString()})
         .then(() => {
           this.$router.replace({path: '/note'})
-        })
+        }).then(() => {
+        this.addTrashNote({note: this.curNote})
+      })
     }
 
   },

@@ -5,9 +5,13 @@ Vue.use(VueRouter)
 import Login from '@/views/Login'
 import NotebookList from '@/views/NotebookList'
 import NoteDetail from '@/views/NoteDetail'
-import TashDetail from '@/views/TashDetail'
+import TrashDetail from '@/views/TrashDetail'
 
 const routes = [
+  {
+    path: '/',
+    redirect: '/notebooks',
+  },
   {
     path: '/login',
     name: 'Login',
@@ -26,7 +30,7 @@ const routes = [
   {
     path: '/trash',
     name: 'TashDetail',
-    component: TashDetail
+    component: TrashDetail
   },
 ]
 

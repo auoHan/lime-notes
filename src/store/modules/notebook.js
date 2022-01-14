@@ -8,7 +8,7 @@ const state = {
   curBookId: null
 }
 const getters = {
-  notebooks: state => state.notebooks,
+  notebooks: state => state.notebooks || [],
   curBook: state => {
     if (!Array.isArray(state.notebooks)) return {}
     if (!state.curBookId) return state.notebooks[0] || {}
