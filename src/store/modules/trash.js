@@ -27,7 +27,7 @@ const mutations = {
     console.log(payload)
     state.trashNotes = state.trashNotes.filter(note => note.id.toString() !== payload.toString())
   },
-  setCurTrashNoteId(state, payload = {}) {
+  setCurTrashNoteId(state, payload = '') {
     state.curTrashNoteId = payload
   }
 }
