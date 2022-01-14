@@ -66,11 +66,17 @@ export default {
     ...mapMutations('trash', ['setCurTrashNoteId']),
     ...mapActions('notebook', ['getNotebooks']),
     onDelete() {
-      this.deleteTrashNote({noteId: this.curTrashNote.id})
+      this.deleteTrashNote({noteId: this.curTrashNote.id}).then(() => {
+        this.setCurTrashNoteId()
+        this.$router.replace({path: '/trash', query: {noteId: this.curTrashNote.id}})
+      })
     },
 
     onRevert() {
-      this.revertTrashNote({noteId: this.curTrashNote.id})
+      this.revertTrashNote({noteId: this.curTrashNote.id}).then(() => {
+        this.setCurTrashNoteId()
+        this.$router.replace({path: '/trash', query: {noteId: this.curTrashNote.id}})
+      })
     }
   },
   beforeRouteUpdate(to, from, next) {

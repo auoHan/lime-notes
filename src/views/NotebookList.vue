@@ -100,7 +100,6 @@ export default {
     },
     onDelete(notebook) {
       const _this = this
-      console.log(this.Modal)
       Modal.confirm({
         title: '确定要删除吗',
         onOk() {
