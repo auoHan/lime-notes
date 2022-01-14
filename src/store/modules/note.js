@@ -54,7 +54,6 @@ const actions = {
   addNote({commit}, {notebookId, title, content}) {
     return notes.addNote({notebookId}, {title, content})
       .then(res => {
-        console.log('add success...', res)
         commit('addNote', {note: res.data})
       })
   },
