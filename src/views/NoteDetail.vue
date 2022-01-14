@@ -9,7 +9,8 @@
           <span> 更新日期: {{ curNote.updatedAtFriendly }}</span>
           <span> {{ statusText }}</span>
           <span class="iconfont icon-delete" @click="onDeleteNote"></span>
-          <span class="iconfont icon-fullscreen" @click="isShowPreview = !isShowPreview"></span>
+          <span class="iconfont icon-fullscreen"
+                @click="isShowPreview = !isShowPreview"></span>
           <Tooltip content="Bottom" placement="left-end">
           </Tooltip>
         </div>
@@ -18,9 +19,11 @@
                  placeholder="输入标题">
         </div>
         <div class="editor">
-          <textarea v-show="isShowPreview" v-model="curNote.content" @input="onUpdateNote"
+          <codemirror v-model="curNote.content" :options="cmOptions" v-show="!isShowPreview" @input="onUpdateNote"
+                      @inputRead="statusText='正在输入...'"/>
+          <!--<textarea v-show="isShowPreview" v-model="curNote.content" @input="onUpdateNote"
                     @keydown="statusText='正在输入...'"
-                    placeholder="输入内容, 支持 markdown 语法"></textarea>
+                    placeholder="输入内容, 支持 markdown 语法"></textarea>-->
           <div class="preview markdown-body" v-html="previewContent" v-show="!isShowPreview">
           </div>
         </div>
@@ -35,18 +38,31 @@ import Vue from 'vue'
 import {Message, Tooltip} from 'view-design'
 import _ from 'lodash'
 import MarkdownIt from 'markdown-it'
+import {codemirror} from 'vue-codemirror'
 import {mapActions, mapMutations, mapGetters} from 'vuex'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/markdown/markdown.js'
+import 'codemirror/theme/neat.css'
+
 
 let md = new MarkdownIt()
 Vue.component('Message', Message)
 Vue.component('Tooltip', Tooltip)
 export default {
   name: 'NoteDetail.vue',
-  components: {NoteSidebar},
+  components: {NoteSidebar, codemirror},
   data() {
     return {
       statusText: '笔记未改动',
-      isShowPreview: false
+      isShowPreview: false,
+      cmOptions: {
+        tabSize: 4,
+        mode: 'text/x-markdown',
+        theme: 'neat',
+        lineNumbers: false,
+        line: true,
+        // more codemirror options, 更多 codemirror 的高级配置...
+      }
     }
   },
   created() {
@@ -65,6 +81,7 @@ export default {
     ...mapActions('note', ['updateNote', 'deleteNote']),
     ...mapMutations('trash', ['addTrashNote']),
     onUpdateNote: _.debounce(function () {
+      if (!this.curNote.id) return
       this.updateNote({noteId: this.curNote.id.toString(), title: this.curNote.title, content: this.curNote.content})
         .then(() => {
           this.statusText = '已保存'
@@ -155,6 +172,16 @@ export default {
   .editor {
     height: ~"calc(100% - 70px)";
     position: relative;
+
+    .vue-codemirror {
+      height: ~"calc(100% - 25px)";
+
+      .CodeMirror {
+        height: 100%;
+        padding: 10px;
+      }
+    }
+
   }
 
   textarea, .preview {
