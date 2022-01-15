@@ -1,7 +1,8 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note" @click="onAddNote">添加笔记</span>
-    <Dropdown trigger="click" class="notebook-title" @on-click="handleCommand" placement="bottom">
+    <span v-if="curBook.id" class="btn add-note" @click="onAddNote">添加笔记</span>
+    <span v-if="!curBook.id" class="notebook-title">无笔记本</span>
+    <Dropdown v-if="curBook.id" trigger="click" class="notebook-title" @on-click="handleCommand" placement="bottom">
       <a href="javascript:void(0)">
         <span>{{ curBook.title }}</span>
         <Icon type="ios-arrow-down"></Icon>
@@ -50,7 +51,7 @@ export default {
   created() {
     this.getNotebooks().then(() => {
       this.setCurBook({curBookId: this.$route.query.notebookId})
-      this.getNotes({notebookId: this.curBook.id.toString()})
+      if (this.curBook.id) return this.getNotes({notebookId: this.curBook.id.toString()})
     }).then(() => {
       this.setCurNote({curNoteId: this.$route.query.noteId})
       this.$router.replace({path: '/note', query: {noteId: this.curNote.id, notebookId: this.curBook.id}})
