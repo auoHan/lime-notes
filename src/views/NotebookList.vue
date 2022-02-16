@@ -3,7 +3,7 @@
     <header>
       <a href="#" class="btn" @click.prevent="showCreateModal=true"><i class="iconfont icon-plus"></i> 新建笔记本</a>
     </header>
-    <main>
+    <main class="main">
       <div class="layout">
         <h3>笔记本列表({{ notebooks.length }})</h3>
         <div class="book-list">
@@ -118,6 +118,8 @@ export default {
 <style lang="less" scoped>
 #notebook-list {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 
   .btn {
     font-size: 12px;
@@ -143,10 +145,16 @@ export default {
   header {
     padding: 12px;
     border-bottom: 1px solid #ccc;
+    position: fixed;
+    width: 100%;
+    background-color: #fff;
   }
 
   main {
     padding: 30px 40px;
+    flex: 1;
+    margin-top: 47.4px;
+    overflow-y: auto;
   }
 
   .layout {

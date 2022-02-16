@@ -32,6 +32,8 @@ html, body, #app {
 }
 
 body {
+  overflow: hidden;
+  height: 100vh;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
